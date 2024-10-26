@@ -2,16 +2,23 @@
 name = "molclip"
 version = "0.1.0"
 description = "Add your description here"
-authors = [
-    { name = "koh", email = "kohbanye@gmail.com" }
-]
+authors = [{ name = "koh", email = "kohbanye@gmail.com" }]
 dependencies = [
-    "mlx-graphs>=0.0.7",
-    "mlx>=0.10.0",
-    "mlx-lm>=0.17.1",
+    "torch>=2.4.1",
+    "torch-geometric>=2.6.0",
+    "pydantic>=2.9.2",
+    "lightning>=2.4.0",
+    "transformers>=4.45.2",
+    "polars>=1.11.0",
+    "rdkit>=2024.3.5",
+    "deepchem>=2.5.0",
+    "tensorflow>=2.18.0",
+    "wandb>=0.18.5",
+    "tokenizers>=0.20.1",
+    "xformers>=0.0.28.post2",
 ]
 readme = "README.md"
-requires-python = ">= 3.8"
+requires-python = ">= 3.10"
 
 [build-system]
 requires = ["hatchling"]
@@ -19,10 +26,22 @@ build-backend = "hatchling.build"
 
 [tool.rye]
 managed = true
-dev-dependencies = []
+dev-dependencies = [
+    "ruff>=0.6.7",
+    "mypy>=1.13.0",
+]
 
 [tool.hatch.metadata]
 allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/molclip"]
+
+[tool.ruff.lint]
+extend-select = ["I"]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+
+[tool.mypy]
+ignore_missing_imports = true
