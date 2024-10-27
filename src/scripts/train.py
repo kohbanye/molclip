@@ -1,6 +1,6 @@
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import WandbLogger
-from rdkit import RDLogger
+from rdkit import rdBase
 
 from molclip.config import DataConfig, MolClipConfig, MolConfig, TextConfig, TrainConfig
 from molclip.data import MolClipDataModule
@@ -8,8 +8,8 @@ from molclip.model import MolClip
 
 
 def main():
-    RDLogger.DisableLog("rdApp.info")
-    RDLogger.DisableLog("rdApp.warning")
+    rdBase.DisableLog("rdApp.info")
+    rdBase.DisableLog("rdApp.warning")
 
     config = MolClipConfig(
         data=DataConfig(),
