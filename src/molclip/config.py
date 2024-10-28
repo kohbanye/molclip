@@ -25,7 +25,8 @@ class TrainConfig(BaseModel):
     accelerator: str = "gpu"
     devices: int | str = "auto"
     max_epochs: int = 30
-    learning_rate: float = 1e-3
+    learning_rate: float = 1e-5
+    gradient_clip_val: float = 1.0
 
 
 class MolClipConfig(BaseModel):

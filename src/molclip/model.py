@@ -131,7 +131,7 @@ class MolClip(pl.LightningModule):
         logits_mol = encoded_text @ encoded_mol.T
 
         loss = self.loss(logits_text, logits_mol)
-        self.log("val_loss", loss)
+        self.log("val_loss", loss, sync_dist=True)
         return
 
     def configure_optimizers(self):
