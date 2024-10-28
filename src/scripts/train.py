@@ -7,7 +7,7 @@ from molclip.data import MolClipDataModule
 from molclip.model import MolClip
 
 
-def main():
+def main(notes: str | None = None, version: str | None = None):
     rdBase.DisableLog("rdApp.info")
     rdBase.DisableLog("rdApp.warning")
 
@@ -23,7 +23,7 @@ def main():
     data_module = MolClipDataModule(config.data, tokenizer)
     data_module.setup()
 
-    logger = WandbLogger(project="molclip")
+    logger = WandbLogger(project="molclip", config=config.model_dump(), notes=notes, version=version)
     trainer = pl.Trainer(
         accelerator=config.train.accelerator,
         devices=config.train.devices,
@@ -34,4 +34,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # for experiment tracking
+    notes = "Add a batch norm layer to the text encoder"
+    version = "0.1.0"
+
+    main(notes, version)

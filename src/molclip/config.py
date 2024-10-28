@@ -9,6 +9,8 @@ class DataConfig(BaseModel):
 
 class TextConfig(BaseModel):
     model_name: str = "dunzhang/stella_en_400M_v5"
+    hidden_channels: int = 1024
+    out_channels: int = 1024
 
 
 class MolConfig(BaseModel):

@@ -15,14 +15,20 @@ class TextEncoder(nn.Module):
     def __init__(self, config: TextConfig):
         super(TextEncoder, self).__init__()
         self.config = config
-        self.model = AutoModel.from_pretrained(
-            self.config.model_name, trust_remote_code=True
-        ).cuda()
+        self.model = AutoModel.from_pretrained(self.config.model_name, trust_remote_code=True).cuda()
+
+        self.bn = nn.BatchNorm1d(self.config.hidden_channels)
+        self.linear = nn.Linear(self.config.hidden_channels, self.config.out_channels)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         attention_mask = torch.ones_like(x)
         last_hidden_state = self.model(x, attention_mask)[0]
-        return last_hidden_state.mean(dim=1)
+        last_hidden_state = last_hidden_state.mean(dim=1)
+
+        normalized = self.bn(last_hidden_state)
+        embedding = self.linear(normalized)
+
+        return embedding
 
 
 class MolEncoder(nn.Module):
@@ -76,9 +82,7 @@ class MolClip(pl.LightningModule):
         self.text_encoder = TextEncoder(config.text)
         self.mol_encoder = MolEncoder(config.mol)
         self.loss_fn = nn.CrossEntropyLoss()
-        self.tokenizer = AutoTokenizer.from_pretrained(
-            config.text.model_name, trust_remote_code=True
-        )
+        self.tokenizer = AutoTokenizer.from_pretrained(config.text.model_name, trust_remote_code=True)
         self.training_step_outputs: list[Log] = []
 
     def get_tokenizer(self):
@@ -95,12 +99,8 @@ class MolClip(pl.LightningModule):
         return encoded_text, encoded_mol_graph
 
     def loss(self, logits_text: torch.Tensor, logits_mol: torch.Tensor) -> torch.Tensor:
-        loss_text = self.loss_fn(
-            logits_text, torch.arange(len(logits_text), device=logits_text.device)
-        )
-        loss_mol = self.loss_fn(
-            logits_mol, torch.arange(len(logits_mol), device=logits_mol.device)
-        )
+        loss_text = self.loss_fn(logits_text, torch.arange(len(logits_text), device=logits_text.device))
+        loss_mol = self.loss_fn(logits_mol, torch.arange(len(logits_mol), device=logits_mol.device))
 
         return (loss_text + loss_mol) / 2
 
@@ -114,9 +114,7 @@ class MolClip(pl.LightningModule):
         loss = self.loss(logits_text, logits_mol)
         self.log("train_loss", loss)
 
-        self.training_step_outputs.append(
-            Log(loss=loss, logits_text=logits_text, logits_mol=logits_mol)
-        )
+        self.training_step_outputs.append(Log(loss=loss, logits_text=logits_text, logits_mol=logits_mol))
         return loss
 
     def on_train_epoch_end(self) -> None:
@@ -137,7 +135,5 @@ class MolClip(pl.LightningModule):
         return
 
     def configure_optimizers(self):
-        optimizer = torch.optim.AdamW(
-            self.parameters(), lr=self.config.train.learning_rate
-        )  # type: ignore
+        optimizer = torch.optim.AdamW(self.parameters(), lr=self.config.train.learning_rate)  # type: ignore
         return optimizer

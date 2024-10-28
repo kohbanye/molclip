@@ -6,7 +6,7 @@ from rdkit.Chem import rdmolops
 from torch_geometric.data import Data
 
 
-def get_mol_graph(smiles: str, input_ids: torch.Tensor) -> Data:
+def get_mol_graph(smiles: str, input_ids: torch.Tensor | None = None) -> Data:
     mol = Chem.MolFromSmiles(smiles)
 
     atom_features: list[np.ndarray] = []
