@@ -112,7 +112,7 @@ namex==0.0.8
     # via keras
 networkx==3.3
     # via torch
-numpy==2.0.2
+numpy==1.26.4
     # via deepchem
     # via h5py
     # via keras
@@ -267,8 +267,9 @@ torch==2.5.0
     # via xformers
 torch-geometric==2.6.0
     # via molclip
-torchmetrics==1.4.3
+torchmetrics==1.5.1
     # via lightning
+    # via molclip
     # via pytorch-lightning
 tqdm==4.66.5
     # via huggingface-hub

@@ -16,6 +16,7 @@ dependencies = [
     "wandb>=0.18.5",
     "tokenizers>=0.20.1",
     "xformers>=0.0.28.post2",
+    "torchmetrics>=1.5.1",
 ]
 readme = "README.md"
 requires-python = ">= 3.10"
