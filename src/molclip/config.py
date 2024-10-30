@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 
 class DataConfig(BaseModel):
-    batch_size: int = 16
+    batch_size: int = 512
     num_workers: int = 4
     max_length: int = 512
 
@@ -23,6 +23,7 @@ class MolConfig(BaseModel):
 
 class TrainConfig(BaseModel):
     accelerator: str = "gpu"
+    strategy: str = "ddp"
     devices: int | str = "auto"
     max_epochs: int = 30
     learning_rate: float = 1e-5

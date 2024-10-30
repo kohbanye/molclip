@@ -18,6 +18,9 @@ class TextEncoder(nn.Module):
         self.config = config
         self.model = AutoModel.from_pretrained(self.config.model_name, trust_remote_code=True).cuda()
 
+        for param in self.model.parameters():
+            param.requires_grad = False
+
         self.bn = nn.BatchNorm1d(self.config.hidden_channels)
         self.linear = nn.Linear(self.config.hidden_channels, self.config.out_channels)
 
@@ -141,7 +144,7 @@ class MolClip(pl.LightningModule):
 
     def on_train_epoch_end(self) -> None:
         avg_loss = torch.stack([x.train_loss for x in self.training_step_outputs if x.train_loss is not None]).mean()
-        self.log("avg_loss", avg_loss)
+        self.log("avg_loss", avg_loss, sync_dist=True)
 
         self.training_step_outputs.clear()
 
@@ -157,7 +160,7 @@ class MolClip(pl.LightningModule):
         log = self.calc_metrics(logits_text, logits_mol)
         log.val_loss = loss
 
-        self.log_dict(log.model_dump(exclude_none=True))
+        self.log_dict(log.model_dump(exclude_none=True), sync_dist=True)
 
         return loss
 
@@ -170,7 +173,7 @@ class MolClip(pl.LightningModule):
 
         log = self.calc_metrics(logits_text, logits_mol)
 
-        self.log_dict(log.model_dump(exclude_none=True))
+        self.log_dict(log.model_dump(exclude_none=True), sync_dist=True)
 
     def configure_optimizers(self):
         optimizer = torch.optim.AdamW(self.parameters(), lr=self.config.train.learning_rate)  # type: ignore

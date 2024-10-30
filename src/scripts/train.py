@@ -29,6 +29,7 @@ def main(notes: str | None = None, version: str | None = None):
     trainer = pl.Trainer(
         accelerator=config.train.accelerator,
         devices=config.train.devices,
+        strategy=config.train.strategy,
         gradient_clip_val=config.train.gradient_clip_val,
         max_epochs=config.train.max_epochs,
         logger=logger,
@@ -40,7 +41,7 @@ def main(notes: str | None = None, version: str | None = None):
 
 if __name__ == "__main__":
     # for experiment tracking
-    notes = "Add metrics calculation"
-    version = "0.1.2"
+    notes = "Fix text encoder's params and increase batch size"
+    version = "0.1.3"
 
     main(notes, version)
