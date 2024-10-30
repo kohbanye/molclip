@@ -4,12 +4,14 @@ from molclip.model import MolClip
 from molclip.utils import fix_seeds
 
 
-def main():
+def main(ckpt_path: str) -> None:
     smiles = "CC(=O)OC1=CC=CC=C1C(=O)O"
     texts = [
-        "aspirin",  # correct
-        "This molecule is a nonsteroidal anti-inflammatory drug (NSAID) used to reduce pain, fever, and inflammation",  # correct
+        "This molecule is a nonsteroidal anti-inflammatory drug (NSAID) used to reduce pain, fever, and inflammation.",  # correct, not in the dataset
+        "A non-steroidal anti-inflammatory drug with cyclooxygenase inhibitor activity.",  # correct, from the dataset
         "This molecule appears as a clear, colorless liquid with a characteristic aromatic odor.",  # incorrect
+        "This is a proton-pump inhibitor, used to treat gastric acid-related disorders.",  # incorrect
+        "選択的セロトニン再取り込み阻害薬（SSRI）に分類される抗うつ薬。",  # incorrect
     ]
 
     config = MolClipConfig(
@@ -20,7 +22,6 @@ def main():
     )
 
     fix_seeds()
-    ckpt_path = "molclip/0.1.0/checkpoints/epoch=29-step=24780.ckpt"
     model = MolClip.load_from_checkpoint(ckpt_path, config=config)
     # model = MolClip(config).cuda()
 
@@ -34,16 +35,14 @@ def main():
     ]
     text_embeds = model.text_encoder.forward(input_ids.cuda())  # type: ignore
 
-    print("Embeddings:")
-    print(f"Molecule: {mol_embed}")
-    for text, text_embed in zip(texts, text_embeds):
-        print(f"Text: {text}\nEmbedding: {text_embed}\n")
+    logits = (mol_embed @ text_embeds.T).softmax(dim=-1)[0]
 
-    print(f"Molecule: {smiles}")
-    for text, text_embed in zip(texts, text_embeds):
-        similarity = text_embed @ mol_embed.T
-        print(f"Text: {text}\nSimilarity: {similarity.item()}\n")
+    print(f"Molecule: {smiles}\n")
+    for text, logit in zip(texts, logits):
+        print(f"Text: {text}")
+        print(f"Probability: {logit.item() * 100:.3f}%\n")
 
 
 if __name__ == "__main__":
-    main()
+    ckpt_path = "molclip/0.1.1/checkpoints/epoch=29-step=24780.ckpt"
+    main(ckpt_path)

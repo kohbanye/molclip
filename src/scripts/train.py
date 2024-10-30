@@ -33,12 +33,14 @@ def main(notes: str | None = None, version: str | None = None):
         max_epochs=config.train.max_epochs,
         logger=logger,
     )
-    trainer.fit(model, data_module)
+
+    trainer.fit(model, datamodule=data_module)
+    trainer.test(model, datamodule=data_module)
 
 
 if __name__ == "__main__":
     # for experiment tracking
-    notes = "Adjusted parameters for training"
-    version = "0.1.1"
+    notes = "Add metrics calculation"
+    version = "0.1.2"
 
     main(notes, version)
