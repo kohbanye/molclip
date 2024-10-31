@@ -138,7 +138,7 @@ class MolClip(pl.LightningModule):
         log.train_loss = loss
         self.training_step_outputs.append(log)
 
-        self.log_dict(log.model_dump(exclude_none=True))
+        self.log_dict(log.model_dump(exclude_none=True), batch_size=mol_graph.num_graphs)
 
         return loss
 
@@ -160,7 +160,7 @@ class MolClip(pl.LightningModule):
         log = self.calc_metrics(logits_text, logits_mol)
         log.val_loss = loss
 
-        self.log_dict(log.model_dump(exclude_none=True), sync_dist=True)
+        self.log_dict(log.model_dump(exclude_none=True), batch_size=mol_graph.num_graphs, sync_dist=True)
 
         return loss
 
@@ -173,7 +173,7 @@ class MolClip(pl.LightningModule):
 
         log = self.calc_metrics(logits_text, logits_mol)
 
-        self.log_dict(log.model_dump(exclude_none=True), sync_dist=True)
+        self.log_dict(log.model_dump(exclude_none=True), batch_size=mol_graph.num_graphs, sync_dist=True)
 
     def configure_optimizers(self):
         optimizer = torch.optim.AdamW(self.parameters(), lr=self.config.train.learning_rate)  # type: ignore

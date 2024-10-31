@@ -44,5 +44,5 @@ def main(ckpt_path: str) -> None:
 
 
 if __name__ == "__main__":
-    ckpt_path = "molclip/0.1.1/checkpoints/epoch=29-step=24780.ckpt"
+    ckpt_path = "molclip/0.1.3/checkpoints/epoch=29-step=780.ckpt"
     main(ckpt_path)

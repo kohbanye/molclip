@@ -33,6 +33,7 @@ def main(notes: str | None = None, version: str | None = None):
         gradient_clip_val=config.train.gradient_clip_val,
         max_epochs=config.train.max_epochs,
         logger=logger,
+        log_every_n_steps=1,
     )
 
     trainer.fit(model, datamodule=data_module)
@@ -41,7 +42,7 @@ def main(notes: str | None = None, version: str | None = None):
 
 if __name__ == "__main__":
     # for experiment tracking
-    notes = "Fix text encoder's params and increase batch size"
-    version = "0.1.3"
+    notes = "Add shuffle=True to DataLoader and increase max_epochs to 100"
+    version = "0.1.4"
 
     main(notes, version)
