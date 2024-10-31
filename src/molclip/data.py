@@ -49,32 +49,26 @@ class MolClipDataModule(pl.LightningDataModule):
         self.tokenizer = tokenizer
         self.batch_size = self.config.batch_size
         self.num_workers = self.config.num_workers
-        self.train_dataset_url = "https://raw.githubusercontent.com/blender-nlp/MolT5/refs/heads/main/ChEBI-20_data/train.txt"
-        self.validation_dataset_url = "https://raw.githubusercontent.com/blender-nlp/MolT5/refs/heads/main/ChEBI-20_data/validation.txt"
-        self.test_dataset_url = "https://raw.githubusercontent.com/blender-nlp/MolT5/refs/heads/main/ChEBI-20_data/test.txt"
+        self.train_dataset_url = (
+            "https://raw.githubusercontent.com/blender-nlp/MolT5/refs/heads/main/ChEBI-20_data/train.txt"
+        )
+        self.validation_dataset_url = (
+            "https://raw.githubusercontent.com/blender-nlp/MolT5/refs/heads/main/ChEBI-20_data/validation.txt"
+        )
+        self.test_dataset_url = (
+            "https://raw.githubusercontent.com/blender-nlp/MolT5/refs/heads/main/ChEBI-20_data/test.txt"
+        )
 
     def setup(self, stage: str | None = None):
-        self.train_dataset = MolClipDataset(
-            self.train_dataset_url, self.config.max_length, self.tokenizer
-        )
-        self.val_dataset = MolClipDataset(
-            self.validation_dataset_url, self.config.max_length, self.tokenizer
-        )
-        self.test_dataset = MolClipDataset(
-            self.test_dataset_url, self.config.max_length, self.tokenizer
-        )
+        self.train_dataset = MolClipDataset(self.train_dataset_url, self.config.max_length, self.tokenizer)
+        self.val_dataset = MolClipDataset(self.validation_dataset_url, self.config.max_length, self.tokenizer)
+        self.test_dataset = MolClipDataset(self.test_dataset_url, self.config.max_length, self.tokenizer)
 
     def train_dataloader(self):
-        return DataLoader(
-            self.train_dataset, batch_size=self.batch_size, num_workers=self.num_workers
-        )
+        return DataLoader(self.train_dataset, batch_size=self.batch_size, num_workers=self.num_workers, shuffle=True)
 
     def val_dataloader(self):
-        return DataLoader(
-            self.val_dataset, batch_size=self.batch_size, num_workers=self.num_workers
-        )
+        return DataLoader(self.val_dataset, batch_size=self.batch_size, num_workers=self.num_workers)
 
     def test_dataloader(self):
-        return DataLoader(
-            self.test_dataset, batch_size=self.batch_size, num_workers=self.num_workers
-        )
+        return DataLoader(self.test_dataset, batch_size=self.batch_size, num_workers=self.num_workers)
