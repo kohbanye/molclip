@@ -42,7 +42,7 @@ def main(notes: str | None = None, version: str | None = None):
 
 if __name__ == "__main__":
     # for experiment tracking
-    notes = "Add shuffle=True to DataLoader and increase max_epochs to 100"
-    version = "0.1.4"
+    notes = "Increase max_epochs to 200"
+    version = "0.1.5"
 
     main(notes, version)

@@ -25,7 +25,7 @@ class TrainConfig(BaseModel):
     accelerator: str = "gpu"
     strategy: str = "ddp"
     devices: int | str = "auto"
-    max_epochs: int = 100
+    max_epochs: int = 200
     learning_rate: float = 1e-5
     gradient_clip_val: float = 1.0
 
