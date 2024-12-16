@@ -17,6 +17,9 @@ dependencies = [
     "tokenizers>=0.20.1",
     "xformers>=0.0.28.post2",
     "torchmetrics>=1.5.1",
+    "python-dotenv>=1.0.1",
+    "google-generativeai>=0.8.3",
+    "datasets>=3.2.0",
 ]
 readme = "README.md"
 requires-python = ">= 3.10"

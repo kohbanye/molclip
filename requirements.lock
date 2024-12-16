@@ -15,28 +15,41 @@ absl-py==2.1.0
 aiohappyeyeballs==2.4.0
     # via aiohttp
 aiohttp==3.10.5
+    # via datasets
     # via fsspec
     # via torch-geometric
 aiosignal==1.3.1
     # via aiohttp
 annotated-types==0.7.0
     # via pydantic
+anyio==4.7.0
+    # via httpx
 astunparse==1.6.3
     # via tensorflow
 attrs==24.2.0
     # via aiohttp
+cachetools==5.5.0
+    # via google-auth
 certifi==2024.8.30
+    # via httpcore
+    # via httpx
     # via requests
     # via sentry-sdk
 charset-normalizer==3.3.2
     # via requests
 click==8.1.7
     # via wandb
+datasets==3.2.0
+    # via molclip
 deepchem==2.5.0
     # via molclip
+dill==0.3.8
+    # via datasets
+    # via multiprocess
 docker-pycreds==0.4.0
     # via wandb
 filelock==3.16.1
+    # via datasets
     # via huggingface-hub
     # via torch
     # via transformers
@@ -47,6 +60,7 @@ frozenlist==1.4.1
     # via aiohttp
     # via aiosignal
 fsspec==2024.9.0
+    # via datasets
     # via huggingface-hub
     # via lightning
     # via pytorch-lightning
@@ -58,18 +72,55 @@ gitdb==4.0.11
     # via gitpython
 gitpython==3.1.43
     # via wandb
+google-ai-generativelanguage==0.6.10
+    # via google-generativeai
+google-api-core==2.24.0
+    # via google-ai-generativelanguage
+    # via google-api-python-client
+    # via google-generativeai
+google-api-python-client==2.155.0
+    # via google-generativeai
+google-auth==2.37.0
+    # via google-ai-generativelanguage
+    # via google-api-core
+    # via google-api-python-client
+    # via google-auth-httplib2
+    # via google-generativeai
+google-auth-httplib2==0.2.0
+    # via google-api-python-client
+google-generativeai==0.8.3
+    # via molclip
 google-pasta==0.2.0
     # via tensorflow
+googleapis-common-protos==1.66.0
+    # via google-api-core
+    # via grpcio-status
 grpcio==1.67.0
+    # via google-api-core
+    # via grpcio-status
     # via tensorboard
     # via tensorflow
+grpcio-status==1.67.0
+    # via google-api-core
+h11==0.14.0
+    # via httpcore
 h5py==3.12.1
     # via keras
     # via tensorflow
+httpcore==1.0.7
+    # via httpx
+httplib2==0.22.0
+    # via google-api-python-client
+    # via google-auth-httplib2
+httpx==0.27.2
+    # via ollama
 huggingface-hub==0.26.1
+    # via datasets
     # via tokenizers
     # via transformers
 idna==3.10
+    # via anyio
+    # via httpx
     # via requests
     # via yarl
 jinja2==3.1.4
@@ -105,11 +156,14 @@ mpmath==1.3.0
 multidict==6.1.0
     # via aiohttp
     # via yarl
+multiprocess==0.70.16
+    # via datasets
 namex==0.0.8
     # via keras
 networkx==3.3
     # via torch
 numpy==1.26.4
+    # via datasets
     # via deepchem
     # via h5py
     # via keras
@@ -153,11 +207,14 @@ nvidia-nvjitlink-cu12==12.4.127
     # via torch
 nvidia-nvtx-cu12==12.4.127
     # via torch
+ollama==0.4.4
+    # via molclip
 opt-einsum==3.4.0
     # via tensorflow
 optree==0.13.0
     # via keras
 packaging==24.1
+    # via datasets
     # via huggingface-hub
     # via keras
     # via lightning
@@ -168,6 +225,7 @@ packaging==24.1
     # via torchmetrics
     # via transformers
 pandas==2.2.3
+    # via datasets
     # via deepchem
 pillow==11.0.0
     # via rdkit
@@ -175,28 +233,50 @@ platformdirs==4.3.6
     # via wandb
 polars==1.11.0
     # via molclip
+proto-plus==1.25.0
+    # via google-ai-generativelanguage
+    # via google-api-core
 protobuf==5.28.3
+    # via google-ai-generativelanguage
+    # via google-api-core
+    # via google-generativeai
+    # via googleapis-common-protos
+    # via grpcio-status
+    # via proto-plus
     # via tensorboard
     # via tensorflow
     # via wandb
 psutil==6.0.0
     # via torch-geometric
     # via wandb
+pyarrow==18.1.0
+    # via datasets
+pyasn1==0.6.1
+    # via pyasn1-modules
+    # via rsa
+pyasn1-modules==0.4.1
+    # via google-auth
 pydantic==2.9.2
+    # via google-generativeai
     # via molclip
+    # via ollama
 pydantic-core==2.23.4
     # via pydantic
 pygments==2.18.0
     # via rich
 pyparsing==3.1.4
+    # via httplib2
     # via torch-geometric
 python-dateutil==2.9.0.post0
     # via pandas
+python-dotenv==1.0.1
+    # via molclip
 pytorch-lightning==2.4.0
     # via lightning
 pytz==2024.2
     # via pandas
 pyyaml==6.0.2
+    # via datasets
     # via huggingface-hub
     # via lightning
     # via pytorch-lightning
@@ -207,6 +287,8 @@ rdkit==2024.3.5
 regex==2024.9.11
     # via transformers
 requests==2.32.3
+    # via datasets
+    # via google-api-core
     # via huggingface-hub
     # via tensorflow
     # via torch-geometric
@@ -214,6 +296,8 @@ requests==2.32.3
     # via wandb
 rich==13.9.3
     # via keras
+rsa==4.9
+    # via google-auth
 safetensors==0.4.5
     # via transformers
 scikit-learn==1.5.2
@@ -240,6 +324,9 @@ six==1.16.0
     # via tensorflow
 smmap==5.0.1
     # via gitdb
+sniffio==1.3.1
+    # via anyio
+    # via httpx
 sympy==1.13.1
     # via torch
 tensorboard==2.18.0
@@ -268,6 +355,8 @@ torchmetrics==1.5.1
     # via molclip
     # via pytorch-lightning
 tqdm==4.66.5
+    # via datasets
+    # via google-generativeai
     # via huggingface-hub
     # via lightning
     # via pytorch-lightning
@@ -278,6 +367,8 @@ transformers==4.45.2
 triton==3.1.0
     # via torch
 typing-extensions==4.12.2
+    # via anyio
+    # via google-generativeai
     # via huggingface-hub
     # via lightning
     # via lightning-utilities
@@ -289,6 +380,8 @@ typing-extensions==4.12.2
     # via torch
 tzdata==2024.2
     # via pandas
+uritemplate==4.1.1
+    # via google-api-python-client
 urllib3==2.2.3
     # via requests
     # via sentry-sdk
@@ -302,5 +395,7 @@ wrapt==1.16.0
     # via tensorflow
 xformers==0.0.28.post2
     # via molclip
+xxhash==3.5.0
+    # via datasets
 yarl==1.11.1
     # via aiohttp
