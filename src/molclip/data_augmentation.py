@@ -5,12 +5,23 @@ import google.generativeai as genai
 import polars as pl
 from datasets import Dataset
 from dotenv import load_dotenv
+from openai import OpenAI
+from pydantic import BaseModel, StrictStr
 from rdkit import Chem
+from tenacity import (
+    retry,
+    stop_after_attempt,
+    wait_random_exponential,
+)
+from tqdm import tqdm
 
 load_dotenv()
 
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
 genai.configure(api_key=GOOGLE_API_KEY)
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 
 def augment_smiles(smiles: str, factor: int = 10, max_iteration: int = 10000) -> list[str]:
@@ -29,7 +40,7 @@ def augment_smiles(smiles: str, factor: int = 10, max_iteration: int = 10000) ->
 
 
 def get_prompt(description: str, factor: int) -> str:
-    return f"""
+    return f"""\
 The following is a description of a molecule.
 Please provide {factor} paraphrases of this text.
 Note that:
@@ -43,23 +54,28 @@ Original text:
 """
 
 
+class Output(BaseModel):
+    root: list[StrictStr]
+
+
+@retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(6))
 def augment_text(text: str, factor: int = 10) -> list[str]:
-    model = genai.GenerativeModel("gemini-1.5-flash")
-    response = model.generate_content(
-        get_prompt(text, factor),
-        generation_config=genai.GenerationConfig(response_mime_type="application/json", response_schema=list[str]),
+    completion = client.beta.chat.completions.parse(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": get_prompt(text, factor - 1)}],
+        response_format=Output,
     )
-    output = eval(response.parts[0].text)
-    if not isinstance(output, list):
+    output = completion.choices[0].message.parsed
+    if output is None:
         return augment_text(text, factor)
-    if len(output) < factor:
+    if len(output.root) < factor - 1:
         return augment_text(text, factor)
-    return output[:factor]
+    return [text, *output.root]
 
 
 def augment(dataset_url: str) -> pl.DataFrame:
     dataset = pl.read_csv(dataset_url, separator="\t")
-    for idx in range(len(dataset)):
+    for idx in tqdm(range(len(dataset))):
         smiles = dataset["SMILES"][idx]
         text = dataset["description"][idx]
         augmented_smiles = augment_smiles(smiles, factor=10)
@@ -68,6 +84,7 @@ def augment(dataset_url: str) -> pl.DataFrame:
         augmented_text = random.shuffle(augmented_text)
         new_rows = pl.DataFrame(
             {
+                "CID": dataset["CID"][idx],
                 "SMILES": augmented_smiles,
                 "description": augmented_text,
             }
